@@ -3,6 +3,9 @@ import { Session } from "lucia";
 import { cache } from "react";
 import { cookies } from "next/headers";
 import { SessionValidation } from "@/lib/types/session";
+import UserService from "./user.service";
+
+const userService = new UserService();
 
 class AuthService {
   public static async createSession(userId: string) {
@@ -38,16 +41,28 @@ class AuthService {
         };
       }
 
-      const result = await auth.validateSession(sessionId);
-      // next.js throws when you attempt to set cookie when rendering page
-      try {
-        if (result.session && result.session.fresh) {
-          await this.createCookieSession(result.session);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = await auth.validateSession(sessionId);
+
+      if (result.session && result.session.fresh) {
+        await this.createCookieSession(result.session);
+      }
+
+      if (!result.session) {
+        await this.createBlankSession();
+      }
+
+      if (result.user) {
+        const profile = await userService.getProfileByUserId(result.user.id);
+
+        if (profile) {
+          result.user.profile = {
+            displayName: profile?.displayName,
+            avatarUrl: profile?.avatarUrl,
+          };
         }
-        if (!result.session) {
-          await this.createBlankSession();
-        }
-      } catch {}
+      }
+
       return result;
     })();
   }

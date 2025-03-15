@@ -8,7 +8,7 @@ import { RegisterSchema } from "@/lib/validators/auth.validators";
 import { UserRegistrationDto } from "@/lib/dtos/auth.dto";
 import SubmitButton from "./SubmitButton";
 import { InputType } from "@/lib/types/form";
-import { signUp } from "@/controllers/auth.controller";
+import { signUp } from "@/actions/auth.actions";
 import useMessages from "@/lib/hooks/useMessages";
 
 const SignUpForm = () => {

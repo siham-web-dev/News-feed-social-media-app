@@ -7,7 +7,7 @@ import { IoHomeOutline } from "react-icons/io5";
 import Link from "next/link";
 import { AiOutlineMenu } from "react-icons/ai";
 import ProfileAvatar from "./ProfileAvatar";
-import CreatePost from "./CreatePost";
+import CreatePostDialog from "./CreatePostDialog";
 
 const SideBar = () => {
   const LINKS = [
@@ -53,9 +53,7 @@ const SideBar = () => {
             <p className="hidden lg:block">{link.label}</p>
           </Link>
         ))}
-        <div className="hidden sm:block">
-          <CreatePost />
-        </div>
+        <CreatePostDialog />
         <div className="hidden sm:block">
           <ProfileAvatar />
         </div>

@@ -1,20 +1,42 @@
+"use client";
 import React from "react";
 import CustomAvatar from "./CustomAvatar";
-import { Button } from "../ui/button";
-import { BsThreeDots } from "react-icons/bs";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import PostDropdownMenu from "./PostDropDown";
+//import { useSession } from "./SessionProvider";
 
-const AvatarPost = () => {
+dayjs.extend(relativeTime);
+
+interface AvatarPostProps {
+  avatarUrl: string;
+  displayName: string;
+  createdAt: string | Date;
+  userUuid: string | undefined;
+  uuid: string;
+  content: string;
+}
+
+const AvatarPost: React.FC<AvatarPostProps> = ({
+  avatarUrl,
+  displayName,
+  createdAt,
+  content,
+  // userUuid,
+  uuid,
+}) => {
+  //  const { user } = useSession();
+
   return (
     <div className="flex gap-2 items-center">
-      <CustomAvatar />
-      <div className=" flex justify-between gap-1 flex-1">
-        <div className="flex flex-col ">
-          <p className="text-[12px] font-semibold">Full Name</p>
-          <small className="text-[10px]">15 h</small>
+      <CustomAvatar url={avatarUrl} />
+      <div className="flex justify-between gap-1 flex-1">
+        <div className="flex flex-col">
+          <p className="text-[12px] font-semibold">{displayName}</p>
+          <small className="text-[10px]">{dayjs(createdAt).fromNow()}</small>
         </div>
-        <Button variant={"ghost"}>
-          <BsThreeDots />
-        </Button>
+        {/* {user?.id == userUuid && <PostDropdownMenu uuid={uuid} />} */}
+        <PostDropdownMenu content={content} uuid={uuid} />
       </div>
     </div>
   );

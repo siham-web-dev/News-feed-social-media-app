@@ -9,7 +9,7 @@ import { LoginSchema } from "@/lib/validators/auth.validators";
 import { UserLoginDto } from "@/lib/dtos/auth.dto";
 import SubmitButton from "./SubmitButton";
 import { InputType } from "@/lib/types/form";
-import { signIn } from "@/controllers/auth.controller";
+import { signIn } from "@/actions/auth.actions";
 import useMessages from "@/lib/hooks/useMessages";
 
 const SignInForm = () => {

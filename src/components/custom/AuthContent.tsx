@@ -13,7 +13,7 @@ const AuthContent: React.FC<AuthContentProps> = ({ children, type }) => {
   return (
     <div className="mb-6 max-w-[300px] sm:max-w-[400px] mx-auto flex flex-col mt-16 justify-center items-center gap-3">
       <div className="rounded-2xl p-5 flex flex-col justify-center items-center  bg-white border border-foreground text-black gap-5">
-        <Logo />
+        <Logo hidden={false} />
         <p className="text-center text-accent-foreground text-sm">
           Stay informed with real-time news, trending stories, and live updates.
         </p>

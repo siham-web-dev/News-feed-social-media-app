@@ -3,7 +3,14 @@ import { Session, User } from "lucia";
 import React from "react";
 
 interface AuthSession {
-  user: User | null;
+  user:
+    | (User & {
+        profile: {
+          displayName: string;
+          avatarUrl: string;
+        };
+      })
+    | null;
   session: Session | null;
 }
 

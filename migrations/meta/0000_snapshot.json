@@ -1,5 +1,5 @@
 {
-  "id": "d6743bd7-fc1a-40f1-9c00-582d3c005edd",
+  "id": "21734f01-1c5c-465c-928c-92554799093e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -10,7 +10,7 @@
       "columns": {
         "uuid": {
           "name": "uuid",
-          "type": "serial",
+          "type": "text",
           "primaryKey": true,
           "notNull": true
         },
@@ -22,7 +22,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "serial",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -62,7 +62,7 @@
       "columns": {
         "uuid": {
           "name": "uuid",
-          "type": "serial",
+          "type": "text",
           "primaryKey": true,
           "notNull": true
         },
@@ -78,12 +78,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "user_id": {
-          "name": "user_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
         "bio": {
           "name": "bio",
           "type": "text",
@@ -92,21 +86,7 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "profiles_user_id_users_id_fk": {
-          "name": "profiles_user_id_users_id_fk",
-          "tableFrom": "profiles",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -198,10 +178,30 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "profile_id": {
+          "name": "profile_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "users_profile_id_profiles_uuid_fk": {
+          "name": "users_profile_id_profiles_uuid_fk",
+          "tableFrom": "users",
+          "tableTo": "profiles",
+          "columnsFrom": [
+            "profile_id"
+          ],
+          "columnsTo": [
+            "uuid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "users_username_unique": {
