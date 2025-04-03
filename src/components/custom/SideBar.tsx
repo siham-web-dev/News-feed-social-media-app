@@ -5,9 +5,9 @@ import { MdOutlineNotificationsActive } from "react-icons/md";
 import { FaRegMessage } from "react-icons/fa6";
 import { IoHomeOutline } from "react-icons/io5";
 import Link from "next/link";
-import { AiOutlineMenu } from "react-icons/ai";
 import ProfileAvatar from "./ProfileAvatar";
 import CreatePostDialog from "./CreatePostDialog";
+import PlusDropDown from "./PlusDropDown";
 
 const SideBar = () => {
   const LINKS = [
@@ -57,10 +57,7 @@ const SideBar = () => {
         <div className="hidden sm:block">
           <ProfileAvatar />
         </div>
-        <button className="flex gap-3 lg:w-full items-center text-[16px] text-black font-semibold transition-all hover:font-bold sm:mt-auto sm:mb-4">
-          <AiOutlineMenu />
-          <p className="hidden lg:block">Plus</p>
-        </button>
+        <PlusDropDown />
       </div>
     </div>
   );

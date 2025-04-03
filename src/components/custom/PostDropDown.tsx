@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { BsThreeDots } from "react-icons/bs";
 import EditPost from "./EditPost";
+import DeletePostDialog from "./DeletePostDialog";
 
 export default function PostDropdownMenu({
   uuid,
@@ -24,11 +25,13 @@ export default function PostDropdownMenu({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuGroup>
+        <DropdownMenuGroup className="flex flex-col gap-1 items-start p-1 text-[14px]">
           <DropdownMenuItem asChild>
             <EditPost uuid={uuid} content={content} />
           </DropdownMenuItem>
-          <DropdownMenuItem>Delete</DropdownMenuItem>
+          <DropdownMenuItem asChild className="hover:font-semibold">
+            <DeletePostDialog uuid={uuid} />
+          </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
