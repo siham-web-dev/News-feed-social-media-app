@@ -4,7 +4,7 @@ import CustomAvatar from "./CustomAvatar";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import PostDropdownMenu from "./PostDropDown";
-//import { useSession } from "./SessionProvider";
+import { useSession } from "./SessionProvider";
 
 dayjs.extend(relativeTime);
 
@@ -22,10 +22,10 @@ const AvatarPost: React.FC<AvatarPostProps> = ({
   displayName,
   createdAt,
   content,
-  // userUuid,
+  userUuid,
   uuid,
 }) => {
-  //  const { user } = useSession();
+  const { user } = useSession();
 
   return (
     <div className="flex gap-2 items-center">
@@ -35,8 +35,9 @@ const AvatarPost: React.FC<AvatarPostProps> = ({
           <p className="text-[12px] font-semibold">{displayName}</p>
           <small className="text-[10px]">{dayjs(createdAt).fromNow()}</small>
         </div>
-        {/* {user?.id == userUuid && <PostDropdownMenu uuid={uuid} />} */}
-        <PostDropdownMenu content={content} uuid={uuid} />
+        {user?.id == userUuid && (
+          <PostDropdownMenu content={content} uuid={uuid} />
+        )}
       </div>
     </div>
   );

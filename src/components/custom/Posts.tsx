@@ -5,8 +5,13 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { getAllPosts } from "@/actions/post.actions";
 import React, { useRef } from "react";
 import LoadingPosts from "./LoadingPosts";
+import { twMerge } from "tailwind-merge";
 
-const Posts = () => {
+const Posts = ({
+  type = "home",
+}: {
+  type?: "home" | "saved" | "other" | "owner";
+}) => {
   const THRESHOLD = 200;
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const {
@@ -38,7 +43,10 @@ const Posts = () => {
   return (
     <div
       ref={scrollContainerRef}
-      className="flex-1 flex flex-col gap-2 p-3 h-screen overflow-y-scroll"
+      className={twMerge(
+        "flex-1 flex flex-col gap-2 p-3 overflow-y-scroll",
+        type === "home" ? "h-screen" : "h-[calc(100vh-350px)]"
+      )}
       onScroll={handleScroll}
     >
       {status === "pending" ? (

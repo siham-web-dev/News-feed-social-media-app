@@ -1,6 +1,7 @@
 import React from "react";
 import CustomAvatar from "./CustomAvatar";
-import { Button } from "../ui/button";
+//import { Button } from "../ui/button";
+import FollowButton from "./FollowButton";
 
 type ProfileSuggestionProps = {
   avatarUrl: string;
@@ -22,7 +23,7 @@ const ProfileSuggestion: React.FC<ProfileSuggestionProps> = ({
           <small className="text-[12px]">@{username}</small>
         </div>
       </div>
-      <Button variant={"link"}>Follow</Button>
+      <FollowButton />
     </div>
   );
 };
