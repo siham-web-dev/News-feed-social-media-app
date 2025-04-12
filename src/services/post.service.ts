@@ -1,34 +1,65 @@
 import { db } from "@/db";
-import { Post, Profile, User } from "@/db/schemas";
-import { desc, eq, InferSelectModel } from "drizzle-orm";
+import { Post, SavedPost } from "@/db/schemas";
+import { PostFilterDto } from "@/lib/dtos/post.dto";
+import { PostPagination } from "@/lib/types/response";
+import { eq } from "drizzle-orm";
 
 class PostService {
-  async getAllPosts({
-    page = 1,
-    pageSize = 10,
-  }: {
-    page?: number;
-    pageSize?: number;
-  }): Promise<{
-    result: {
-      posts: InferSelectModel<typeof Post>;
-      users: InferSelectModel<typeof User> | null;
-      profiles: InferSelectModel<typeof Profile>;
-    }[];
-    nextPage: number | null;
-  }> {
-    const offset = (page - 1) * pageSize;
+  async getAllSavedPosts(filterDto: PostFilterDto): PostPagination {
+    const { page = 1, size = 10 } = filterDto;
+    const offset = (page - 1) * size;
 
-    const result = await db
-      .select()
-      .from(Post)
-      .leftJoin(User, eq(User.id, Post.userUuid))
-      .innerJoin(Profile, eq(Profile.userId, User.id))
-      .orderBy(desc(Post.createdAt))
-      .limit(pageSize)
-      .offset(offset);
+    if (!filterDto.userUuid) {
+      throw new Error("Can't get saved posts without knowing the user");
+    }
 
-    const nextPage = result.length === pageSize ? page + 1 : null;
+    const result = await db.query.SavedPost.findMany({
+      where: eq(SavedPost.userUuid, filterDto.userUuid),
+      offset: offset,
+      limit: size,
+      with: {
+        post: {
+          with: {
+            user: {
+              with: {
+                profile: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const formattedResult = result.map((value) => ({
+      ...value.post,
+      user: value.post.user,
+    }));
+
+    const nextPage = result.length === size ? page + 1 : null;
+
+    return { result: formattedResult, nextPage };
+  }
+
+  async getPosts(filterDto: PostFilterDto): PostPagination {
+    const { page = 1, size = 10 } = filterDto;
+    const offset = (page - 1) * size;
+
+    const result = await db.query.Post.findMany({
+      limit: size,
+      offset: offset,
+      with: {
+        user: {
+          with: {
+            profile: true,
+          },
+        },
+      },
+      where: filterDto.userUuid
+        ? eq(Post.userUuid, filterDto.userUuid)
+        : undefined,
+    });
+
+    const nextPage = result.length === size ? page + 1 : null;
 
     return { result, nextPage };
   }

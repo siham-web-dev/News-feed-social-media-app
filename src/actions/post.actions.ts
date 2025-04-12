@@ -1,7 +1,7 @@
 "use server";
 import { HUMANIZED_MESSAGES } from "@/lib/constants";
-import { PostDto } from "@/lib/dtos/post.dto";
-import { ActionResult } from "@/lib/types/response";
+import { PostFilterDto, PostDto } from "@/lib/dtos/post.dto";
+import { ActionResult, PostPagination } from "@/lib/types/response";
 import { PostSchema } from "@/lib/validators/post.validators";
 import AuthService from "@/services/auth.service";
 import PostService from "@/services/post.service";
@@ -11,11 +11,40 @@ const postService = new PostService();
 export const getAllPosts = async ({
   page,
   size,
-}: {
-  page: number;
-  size: number;
-}) => {
-  return await postService.getAllPosts({ pageSize: size, page });
+}: PostFilterDto): PostPagination => {
+  return await postService.getPosts({ size, page });
+};
+
+export const getAllCurrentUserPosts = async ({
+  page,
+  size,
+}: PostFilterDto): PostPagination => {
+  const { user } = await AuthService.validateSession();
+  return await postService.getPosts({ size, page, userUuid: user?.id });
+};
+
+export const getAllPostsByUserUuid = async ({
+  page,
+  size,
+  userUuid,
+}: PostFilterDto): PostPagination => {
+  return await postService.getPosts({ size, page, userUuid });
+};
+
+export const getAllSavedPosts = async ({
+  page,
+  size,
+}: PostFilterDto): PostPagination => {
+  const { user } = await AuthService.validateSession();
+  return await postService.getAllSavedPosts({ size, page, userUuid: user?.id });
+};
+
+export const getPostsByUserUuid = async ({
+  page,
+  size,
+  userUuid,
+}: PostFilterDto): PostPagination => {
+  return await postService.getPosts({ size, page, userUuid });
 };
 
 export const createPost = async (postDto: PostDto): Promise<ActionResult> => {

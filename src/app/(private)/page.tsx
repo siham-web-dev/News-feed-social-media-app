@@ -1,3 +1,4 @@
+import { getAllPosts } from "@/actions/post.actions";
 import Posts from "@/components/custom/Posts";
 import TopTopics from "@/components/custom/TopTopics";
 import WhoToFollow from "@/components/custom/WhoToFollow";
@@ -5,7 +6,7 @@ import WhoToFollow from "@/components/custom/WhoToFollow";
 export default function Home() {
   return (
     <>
-      <Posts />
+      <Posts callBack={getAllPosts} height="full-screen" />
       <div className="mx-3 sm:w-[270px]">
         <WhoToFollow />
         <TopTopics />

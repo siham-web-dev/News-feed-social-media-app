@@ -1,51 +1,36 @@
 "use client";
 import Post from "./Post";
 import dayjs from "dayjs";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getAllPosts } from "@/actions/post.actions";
-import React, { useRef } from "react";
 import LoadingPosts from "./LoadingPosts";
 import { twMerge } from "tailwind-merge";
+import usePostQuery from "@/lib/hooks/usePostQuery";
+import React from "react";
+import { PostFilterDto } from "@/lib/dtos/post.dto";
+import { PostPagination } from "@/lib/types/response";
 
 const Posts = ({
-  type = "home",
+  height = "full-screen",
+  callBack,
 }: {
-  type?: "home" | "saved" | "other" | "owner";
+  height?: "full-screen" | "fit-screen";
+  callBack: (dto: PostFilterDto) => PostPagination;
 }) => {
-  const THRESHOLD = 200;
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const {
+    scrollContainerRef,
     data,
     error,
-    fetchNextPage,
+    handleScroll,
+    status,
     hasNextPage,
     isFetchingNextPage,
-    status,
-  } = useInfiniteQuery({
-    queryKey: ["posts"],
-    queryFn: ({ pageParam = 1 }) => getAllPosts({ page: pageParam, size: 10 }),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage) => lastPage.nextPage,
-  });
-
-  const handleScroll = () => {
-    const div = scrollContainerRef.current;
-    if (!div || isFetchingNextPage) return;
-
-    const scrollPosition = div.scrollTop + div.clientHeight;
-    const bottomPosition = div.scrollHeight - THRESHOLD;
-
-    if (scrollPosition >= bottomPosition && hasNextPage) {
-      fetchNextPage();
-    }
-  };
+  } = usePostQuery({ callBack });
 
   return (
     <div
       ref={scrollContainerRef}
       className={twMerge(
         "flex-1 flex flex-col gap-2 p-3 overflow-y-scroll",
-        type === "home" ? "h-screen" : "h-[calc(100vh-350px)]"
+        height === "full-screen" ? "h-screen" : "h-[calc(100vh-350px)]"
       )}
       onScroll={handleScroll}
     >
@@ -53,22 +38,26 @@ const Posts = ({
         <LoadingPosts />
       ) : status === "error" ? (
         <p className="text-red-500">
-          Something went wrong {`"${error.message}"`}
+          Something went wrong {`"${error?.message}"`}
         </p>
       ) : (
-        data.pages.map(({ result }, i) => (
+        data?.pages.map(({ result }, i) => (
           <React.Fragment key={i}>
-            {result.map((post) => (
-              <Post
-                userUuid={post.users?.id}
-                uuid={post.posts.id}
-                avatarUrl={post.profiles.avatarUrl}
-                content={post.posts.content}
-                displayName={post.profiles.displayName}
-                key={post.posts.id}
-                createdAt={dayjs(post.posts.createdAt).toString()}
-              />
-            ))}
+            {result.length > 0 ? (
+              result.map((post) => (
+                <Post
+                  userUuid={post.userUuid}
+                  uuid={post.id}
+                  avatarUrl={post.user.profile.avatarUrl}
+                  content={post.content}
+                  displayName={post.user.profile.displayName}
+                  key={post.id}
+                  createdAt={dayjs(post.createdAt).toString()}
+                />
+              ))
+            ) : (
+              <p className="text-center my-4">No Posts for the moment</p>
+            )}
           </React.Fragment>
         ))
       )}

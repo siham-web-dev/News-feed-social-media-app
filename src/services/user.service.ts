@@ -1,6 +1,6 @@
 import { db } from "@/db";
-import { Profile, User } from "@/db/schemas";
-import { eq, InferInsertModel, InferSelectModel } from "drizzle-orm";
+import { Post, Profile, User, UserFollowings } from "@/db/schemas";
+import { count, eq, InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { FindUserDto } from "@/lib/dtos/user.dto";
 import { CreatUserDto } from "@/lib/dtos/auth.dto";
 import { generateId } from "lucia";
@@ -21,6 +21,38 @@ class UserService {
     });
 
     return user;
+  }
+
+  public async getAllUserInfoByUserUuid(userUuid: string) {
+    const where = eq(User.id, userUuid);
+    const userInfo = await db.query.User.findFirst({
+      where,
+      with: {
+        profile: true,
+      },
+      columns: {
+        username: true,
+        id: true,
+      },
+    });
+
+    const nbPosts = await db.select({ count: count() }).from(Post).where(where);
+    const nbFollowers = await db
+      .select({ count: count() })
+      .from(UserFollowings)
+      .where(eq(UserFollowings.followingId, userUuid));
+
+    const nbFollowing = await db
+      .select({ count: count() })
+      .from(UserFollowings)
+      .where(eq(UserFollowings.userUuid, userUuid));
+
+    return {
+      nbPosts,
+      nbFollowers,
+      nbFollowing,
+      ...userInfo,
+    };
   }
 
   public async getProfileByUserId(
