@@ -1,44 +1,35 @@
 import { FaUserEdit } from "react-icons/fa";
 import { Button } from "../ui/button";
-//import FollowButton from "./FollowButton";
+import UserProfileStatistics from "./UserProfileStatistics";
+import { UserResult } from "@/lib/types/response";
+import FollowButton from "./FollowButton";
 
-const ProfileInfo = () => {
+const ProfileInfo = ({
+  user,
+  isEditable,
+}: {
+  user: UserResult;
+  isEditable: boolean;
+}) => {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 flex-1">
       <div className="flex justify-between items-center flex-wrap">
-        <h2 className="text-xl md:text-2xl font-semibold">@Username</h2>
-        <Button
-          variant={"outline"}
-          className="btn btn-primary hover:cursor-pointer"
-        >
-          <FaUserEdit /> Edit profile
-        </Button>
-        {/* <FollowButton /> */}
+        <h2 className="text-xl md:text-2xl font-semibold">@{user.username}</h2>
+        {isEditable ? (
+          <Button
+            variant={"outline"}
+            className="btn btn-primary hover:cursor-pointer"
+          >
+            <FaUserEdit /> Edit profile
+          </Button>
+        ) : (
+          <FollowButton userUuid={user.id} />
+        )}
       </div>
-      <div className="flex gap-2 items-center flex-wrap">
-        <div className="flex gap-1 items-center  text-[12px] md:text-[16px]">
-          <span>0</span>
-          <span className="text-gray-500 font-semibold">Posts</span>
-        </div>
-        <Button
-          variant={"link"}
-          className="flex gap-1 items-center cursor-pointer  text-[12px] md:text-[16px]"
-        >
-          <span>0</span>
-          <span className="text-gray-500 font-semibold ">Following</span>
-        </Button>
-        <Button
-          variant={"link"}
-          className="flex gap-1 items-center cursor-pointer  text-[12px] md:text-[16px]"
-        >
-          <span>0</span>
-          <span className="text-gray-500 font-semibold">Followers</span>
-        </Button>
-      </div>
-      <p className="font-semibold">full Name</p>
+      <UserProfileStatistics userId={user.id} />
+      <p className="font-semibold">{user?.profile?.displayName}</p>
       <p className="text-sm text-gray-800">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam non urna
-        ac nisi facilisis convallis.
+        <b>Bio</b> - {user?.profile?.bio || "No bio"}
       </p>
     </div>
   );

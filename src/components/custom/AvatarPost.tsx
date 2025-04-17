@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import PostDropdownMenu from "./PostDropDown";
 import { useSession } from "./SessionProvider";
+import Link from "next/link";
 
 dayjs.extend(relativeTime);
 
@@ -32,7 +33,12 @@ const AvatarPost: React.FC<AvatarPostProps> = ({
       <CustomAvatar url={avatarUrl} />
       <div className="flex justify-between gap-1 flex-1">
         <div className="flex flex-col">
-          <p className="text-[12px] font-semibold">{displayName}</p>
+          <Link
+            href={`/profile/${userUuid}`}
+            className="text-[12px] font-semibold"
+          >
+            {displayName}
+          </Link>
           <small className="text-[10px]">{dayjs(createdAt).fromNow()}</small>
         </div>
         {user?.id == userUuid && (

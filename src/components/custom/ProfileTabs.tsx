@@ -29,7 +29,11 @@ export default async function ProfileTabs() {
         <Posts callBack={getAllCurrentUserPosts} height="fit-screen" />
       </TabsContent>
       <TabsContent value="s-posts">
-        <Posts callBack={getAllSavedPosts} height="fit-screen" />
+        <Posts
+          callBack={getAllSavedPosts}
+          key={"saved-posts"}
+          height="fit-screen"
+        />
       </TabsContent>
     </Tabs>
   );

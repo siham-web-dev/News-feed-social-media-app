@@ -8,3 +8,8 @@ export type PostFilterDto = {
   userUuid?: string;
   description?: string;
 };
+
+export type SavedPostDto = {
+  userUuid: string;
+  postUuid: string;
+};

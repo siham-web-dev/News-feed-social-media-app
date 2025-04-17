@@ -48,9 +48,9 @@ const Posts = ({
                 <Post
                   userUuid={post.userUuid}
                   uuid={post.id}
-                  avatarUrl={post.user.profile.avatarUrl}
+                  avatarUrl={post.user.profile?.avatarUrl as string}
                   content={post.content}
-                  displayName={post.user.profile.displayName}
+                  displayName={post.user.profile?.displayName as string}
                   key={post.id}
                   createdAt={dayjs(post.createdAt).toString()}
                 />

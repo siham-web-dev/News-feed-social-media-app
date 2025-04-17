@@ -1,26 +1,24 @@
-"use client";
-import { FaRegComment, FaRegHeart } from "react-icons/fa6";
+import { FaRegComment } from "react-icons/fa6";
 import { Button } from "../ui/button";
-import { LuBookmark } from "react-icons/lu";
 import { Input } from "../ui/input";
 import { useState } from "react";
+import PostLikesModel from "./PostLikesModel";
+import PostCommentsModel from "./PostCommentsModel";
+import LikeButton from "./LikeButton";
+import SaveButton from "./SaveButton";
 
-const PostActions = () => {
+const PostActions = ({ postUuid }: { postUuid: string }) => {
   const [toggleComment, setToggleComment] = useState<boolean>(false);
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-col gap-1 text-[10px] font-medium text-gray-500">
-        <p>104 Likes</p>
-        <span className="hover:underline hover:cursor-pointer">
-          Show all 405 comments
-        </span>
+        <PostLikesModel postUuid={postUuid} />
+        <PostCommentsModel postUuid={postUuid} />
       </div>
       <div className="flex justify-between items-center ">
         <div className="flex gap-1 items-center">
-          <Button variant={"ghost"}>
-            <FaRegHeart size={34} />
-          </Button>
+          <LikeButton postUuid={postUuid} />
           <Button
             variant={"ghost"}
             onClick={() => setToggleComment(!toggleComment)}
@@ -28,9 +26,7 @@ const PostActions = () => {
             <FaRegComment size={34} />
           </Button>
         </div>
-        <Button variant={"ghost"}>
-          <LuBookmark size={34} />
-        </Button>
+        <SaveButton postUuid={postUuid} />
       </div>
       {toggleComment && (
         <Input

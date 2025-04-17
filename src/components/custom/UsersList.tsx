@@ -2,30 +2,40 @@ import React from "react";
 import CustomAvatar from "./CustomAvatar";
 //import { Button } from "../ui/button";
 import FollowButton from "./FollowButton";
+import Link from "next/link";
 
-type ProfileSuggestionProps = {
+type UsersListProps = {
   avatarUrl: string;
   username: string;
   displayName: string;
+  id: string;
+  isCurrentUser?: boolean;
 };
 
-const ProfileSuggestion: React.FC<ProfileSuggestionProps> = ({
+const UsersList: React.FC<UsersListProps> = ({
   avatarUrl,
   username,
   displayName,
+  id,
+  isCurrentUser = false,
 }) => {
   return (
     <div className="flex justify-between">
       <div className="flex items-center gap-2">
         <CustomAvatar url={avatarUrl} />
         <div className="flex flex-col ">
-          <p className="text-[14px]">{displayName}</p>
+          <Link
+            href={`/profile/${id}`}
+            className="text-[14px] hover:font-semibold"
+          >
+            {displayName}
+          </Link>
           <small className="text-[12px]">@{username}</small>
         </div>
       </div>
-      <FollowButton />
+      {!isCurrentUser && <FollowButton userUuid={id} />}
     </div>
   );
 };
 
-export default ProfileSuggestion;
+export default UsersList;

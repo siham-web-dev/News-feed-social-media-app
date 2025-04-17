@@ -5,8 +5,10 @@ import { PostPagination } from "../types/response";
 
 const usePostQuery = ({
   callBack,
+  postQueryKey = "posts",
 }: {
   callBack: (dto: PostFilterDto) => PostPagination;
+  postQueryKey?: "posts" | "saved-posts";
 }) => {
   const THRESHOLD = 200;
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -18,7 +20,7 @@ const usePostQuery = ({
     isFetchingNextPage,
     status,
   } = useInfiniteQuery({
-    queryKey: ["posts"],
+    queryKey: [postQueryKey, "user-stats"],
     queryFn: ({ pageParam = 1 }) => callBack({ page: pageParam, size: 10 }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => lastPage.nextPage,

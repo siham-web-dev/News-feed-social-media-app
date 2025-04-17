@@ -1,6 +1,8 @@
 import { pgTable, primaryKey, text, timestamp } from "drizzle-orm/pg-core";
 import { User } from "@/db/schemas/user.schema";
 import { relations } from "drizzle-orm";
+import { LikedPost } from "./likedPost.schema";
+import { Comment } from "./comment.schema";
 
 export const Post = pgTable("posts", {
   id: text("uuid").primaryKey(),
@@ -26,6 +28,8 @@ export const SavedPost = pgTable(
 
 export const postsRelations = relations(Post, ({ many, one }) => ({
   savedBy: many(SavedPost),
+  likedBy: many(LikedPost),
+  comments: many(Comment),
   user: one(User, {
     fields: [Post.userUuid],
     references: [User.id],

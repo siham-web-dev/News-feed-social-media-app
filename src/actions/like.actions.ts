@@ -2,25 +2,14 @@
 
 import { HUMANIZED_MESSAGES } from "@/lib/constants";
 import AuthService from "@/services/auth.service";
-import NetworkService from "@/services/network.service";
+import { LikeService } from "@/services/like.service";
 
-const networkService = new NetworkService();
+const likeService = new LikeService();
 
-export const getUsersSugesstions = async () => {
-  const { user } = await AuthService.validateSession();
-  if (!user) {
-    throw new Error("Unauthorized");
-  }
-
-  const sugesstions = await networkService.getSugesstions(user.id);
-
-  return sugesstions;
-};
-
-export const isFollowedByCurrentUser = async ({
-  userUuid,
+export const isLikedByCurrentUser = async ({
+  postUuid,
 }: {
-  userUuid: string;
+  postUuid: string;
 }) => {
   try {
     const { user } = await AuthService.validateSession();
@@ -28,12 +17,12 @@ export const isFollowedByCurrentUser = async ({
       throw new Error("Unauthorized");
     }
 
-    const isFollowedBy = await networkService.isFollowedBy({
-      followingUuid: userUuid,
+    const isLikedBy = await likeService.isLikedBy({
+      postUuid,
       userUuid: user.id,
     });
 
-    return { isFollowedBy };
+    return { isLikedBy };
   } catch (error) {
     console.error(error);
 
@@ -41,16 +30,32 @@ export const isFollowedByCurrentUser = async ({
   }
 };
 
-export const follow = async ({ userUuid }: { userUuid: string }) => {
+export const getLikes = async ({ postUuid }: { postUuid: string }) => {
   try {
     const { user } = await AuthService.validateSession();
     if (!user) {
       throw new Error("Unauthorized");
     }
-    console.log(userUuid === user.id);
 
-    await networkService.follow({
-      followingUuid: userUuid,
+    const likes = await likeService.getLikes(postUuid);
+
+    return { likes };
+  } catch (error) {
+    console.error(error);
+
+    return { error: HUMANIZED_MESSAGES.ERROR.INTERNAL_SERVER_ERR };
+  }
+};
+
+export const likePost = async ({ postUuid }: { postUuid: string }) => {
+  try {
+    const { user } = await AuthService.validateSession();
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
+
+    await likeService.like({
+      postUuid,
       userUuid: user.id,
     });
   } catch (error) {
@@ -60,15 +65,15 @@ export const follow = async ({ userUuid }: { userUuid: string }) => {
   }
 };
 
-export const unFollow = async ({ userUuid }: { userUuid: string }) => {
+export const unLikePost = async ({ postUuid }: { postUuid: string }) => {
   try {
     const { user } = await AuthService.validateSession();
     if (!user) {
       throw new Error("Unauthorized");
     }
 
-    await networkService.unFollow({
-      followingUuid: userUuid,
+    await likeService.unlike({
+      postUuid,
       userUuid: user.id,
     });
   } catch (error) {

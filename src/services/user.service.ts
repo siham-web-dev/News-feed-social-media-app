@@ -4,6 +4,7 @@ import { count, eq, InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { FindUserDto } from "@/lib/dtos/user.dto";
 import { CreatUserDto } from "@/lib/dtos/auth.dto";
 import { generateId } from "lucia";
+import { UserResult, UserStatisticsResult } from "@/lib/types/response";
 
 class UserService {
   public async findUser(
@@ -23,20 +24,14 @@ class UserService {
     return user;
   }
 
-  public async getAllUserInfoByUserUuid(userUuid: string) {
-    const where = eq(User.id, userUuid);
-    const userInfo = await db.query.User.findFirst({
-      where,
-      with: {
-        profile: true,
-      },
-      columns: {
-        username: true,
-        id: true,
-      },
-    });
+  public async getUserStatistics(
+    userUuid: string
+  ): Promise<UserStatisticsResult> {
+    const nbPosts = await db
+      .select({ count: count() })
+      .from(Post)
+      .where(eq(Post.userUuid, userUuid));
 
-    const nbPosts = await db.select({ count: count() }).from(Post).where(where);
     const nbFollowers = await db
       .select({ count: count() })
       .from(UserFollowings)
@@ -48,11 +43,27 @@ class UserService {
       .where(eq(UserFollowings.userUuid, userUuid));
 
     return {
-      nbPosts,
-      nbFollowers,
-      nbFollowing,
-      ...userInfo,
+      nbPosts: nbPosts[0].count,
+      nbFollowers: nbFollowers[0].count,
+      nbFollowing: nbFollowing[0].count,
     };
+  }
+
+  public async getUserProfileInfoByUserUuid(
+    userUuid: string
+  ): Promise<UserResult | undefined> {
+    const userInfo = await db.query.User.findFirst({
+      where: eq(User.id, userUuid),
+      with: {
+        profile: true,
+      },
+      columns: {
+        username: true,
+        id: true,
+      },
+    });
+
+    return userInfo;
   }
 
   public async getProfileByUserId(

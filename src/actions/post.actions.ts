@@ -8,6 +8,68 @@ import PostService from "@/services/post.service";
 
 const postService = new PostService();
 
+export const savePost = async ({ postUuid }: { postUuid: string }) => {
+  try {
+    const { user } = await AuthService.validateSession();
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
+
+    console.log("hello im trying to save post " + user.id);
+
+    await postService.savePost({
+      postUuid,
+      userUuid: user.id,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return { error: HUMANIZED_MESSAGES.ERROR.INTERNAL_SERVER_ERR };
+  }
+};
+
+export const isSavedByCurrentUser = async ({
+  postUuid,
+}: {
+  postUuid: string;
+}) => {
+  try {
+    const { user } = await AuthService.validateSession();
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
+
+    const result = await postService.isSavedByUser({
+      postUuid,
+      userUuid: user.id,
+    });
+
+    return { isSaved: result };
+  } catch (error) {
+    console.error(error);
+
+    return { error: HUMANIZED_MESSAGES.ERROR.INTERNAL_SERVER_ERR };
+  }
+};
+
+export const unSavePost = async ({ postUuid }: { postUuid: string }) => {
+  try {
+    const { user } = await AuthService.validateSession();
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
+
+    await postService.unSavePost({
+      postUuid,
+      userUuid: user.id,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return { error: HUMANIZED_MESSAGES.ERROR.INTERNAL_SERVER_ERR };
+  }
+};
+
 export const getAllPosts = async ({
   page,
   size,

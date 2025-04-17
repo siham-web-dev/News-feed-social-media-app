@@ -11,6 +11,8 @@ import {
   UserFollowings,
   userFollowingsRelations,
 } from "@/db/schemas/network.schema";
+import { Comment, CommentRelations } from "@/db/schemas/comment.schema";
+import { LikedPostsRelations, LikedPost } from "@/db/schemas/likedPost.schema";
 
 export {
   Session,
@@ -20,6 +22,10 @@ export {
   SavedPost,
   postsRelations,
   savedPostsRelations,
+  Comment,
+  CommentRelations,
+  LikedPostsRelations,
+  LikedPost,
   userRelations,
   UserFollowings,
   userFollowingsRelations,

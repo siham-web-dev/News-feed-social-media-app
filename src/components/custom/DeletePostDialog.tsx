@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import useMessages from "@/lib/hooks/useMessages";
 import { deletePost } from "@/actions/post.actions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { InfiniteDataPosts, QueryFiltersPost } from "@/lib/types/react-query";
+import { InfiniteDataPosts } from "@/lib/types/react-query";
 import { useState } from "react";
 
 const DeletePostDialog = ({ uuid }: { uuid: string }) => {
@@ -20,17 +20,19 @@ const DeletePostDialog = ({ uuid }: { uuid: string }) => {
         throw new Error(result.error);
       }
     },
-    onSuccess: async () => {
-      const queryFilter: QueryFiltersPost = { queryKey: ["posts"] };
+    onMutate: async () => {
+      const queryFilter = { queryKey: ["posts", "saved-posts"] };
 
       await queryClient.cancelQueries(queryFilter);
 
       queryClient.setQueriesData<InfiniteDataPosts>(queryFilter, (oldData) => {
         if (!oldData) return oldData;
 
+        console.log("query");
+
         const pages = oldData.pages.map((page) => ({
           nextPage: page.nextPage,
-          result: page.result.filter((p) => p.posts.id !== uuid),
+          result: page.result.filter((p) => p.id !== uuid),
         }));
 
         return {
@@ -38,6 +40,7 @@ const DeletePostDialog = ({ uuid }: { uuid: string }) => {
           pages,
         };
       });
+      queryClient.invalidateQueries({ queryKey: ["user-stats"] });
 
       showMessage("Post deleted", "success");
       onClose();
