@@ -1,15 +1,11 @@
 "use client";
-import React, { useTransition } from "react";
-import { Form } from "../ui/form";
-import CustomFormField from "./FormField";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterSchema } from "@/lib/validators/auth.validators";
 import { UserRegistrationDto } from "@/lib/dtos/auth.dto";
-import SubmitButton from "./SubmitButton";
 import { InputType } from "@/lib/types/form";
 import { signUp } from "@/actions/auth.actions";
-import useMessages from "@/lib/hooks/useMessages";
+import Form from "./Form";
 
 const SignUpForm = () => {
   const FIELDS: InputType[] = [
@@ -51,37 +47,9 @@ const SignUpForm = () => {
       password: "",
     },
   });
-  const [isPending, startTransition] = useTransition();
-  const { showMessage } = useMessages();
-
-  const onSubmit = (values: UserRegistrationDto) => {
-    startTransition(async () => {
-      const { error } = await signUp(values);
-      if (error) {
-        showMessage(error, "error");
-      }
-    });
-  };
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full gap-3.5 flex flex-col"
-        method="post"
-      >
-        {FIELDS.map((field) => (
-          <div key={field.id}>
-            <CustomFormField {...field} control={form.control} />
-          </div>
-        ))}
-        <SubmitButton
-          width="full"
-          disabled={isPending}
-          text={isPending ? "Registering ..." : "Sign Up"}
-        />
-      </form>
-    </Form>
+    <Form callBack={signUp} form={form} fields={FIELDS} submitText="Sign In" />
   );
 };
 

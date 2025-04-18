@@ -16,11 +16,9 @@ import { auth } from "@/lib/auth";
 
 const userService = new UserService();
 
-export async function signUp(
-  signUpDto: UserRegistrationDto
-): Promise<ActionResult> {
+export async function signUp(dto: UserRegistrationDto): Promise<ActionResult> {
   try {
-    const formData = RegisterSchema.parse(signUpDto);
+    const formData = RegisterSchema.parse(dto);
     const userEmailExist = await userService.findUser({
       email: formData.email,
     });
@@ -61,9 +59,9 @@ export async function signUp(
   }
 }
 
-export async function signIn(signInDto: UserLoginDto): Promise<ActionResult> {
+export async function signIn(dto: UserLoginDto): Promise<ActionResult> {
   try {
-    const formData = LoginSchema.parse(signInDto);
+    const formData = LoginSchema.parse(dto);
 
     const user = await userService.findUser({
       username: formData.username,
