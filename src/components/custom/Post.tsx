@@ -29,7 +29,7 @@ const Post = ({
         userUuid={userUuid}
       />
       <PostContent content={content} />
-      <PostActions />
+      <PostActions postUuid={uuid} />
     </div>
   );
 };

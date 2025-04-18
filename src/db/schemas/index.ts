@@ -1,6 +1,32 @@
 import { User } from "@/db/schemas/user.schema";
-import { Post } from "@/db/schemas/post.schema";
-import { Profile } from "@/db/schemas/profile.schema";
+import {
+  Post,
+  SavedPost,
+  postsRelations,
+  savedPostsRelations,
+} from "@/db/schemas/post.schema";
+import { Profile, userRelations } from "@/db/schemas/profile.schema";
 import { Session } from "@/db/schemas/session.schema";
+import {
+  UserFollowings,
+  userFollowingsRelations,
+} from "@/db/schemas/network.schema";
+import { Comment, CommentRelations } from "@/db/schemas/comment.schema";
+import { LikedPostsRelations, LikedPost } from "@/db/schemas/likedPost.schema";
 
-export { Session, Profile, Post, User };
+export {
+  Session,
+  Profile,
+  Post,
+  User,
+  SavedPost,
+  postsRelations,
+  savedPostsRelations,
+  Comment,
+  CommentRelations,
+  LikedPostsRelations,
+  LikedPost,
+  userRelations,
+  UserFollowings,
+  userFollowingsRelations,
+};

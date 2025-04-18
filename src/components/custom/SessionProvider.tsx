@@ -5,6 +5,7 @@ import React from "react";
 interface AuthSession {
   user:
     | (User & {
+        username: string;
         profile: {
           displayName: string;
           avatarUrl: string;

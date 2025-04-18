@@ -1,17 +1,112 @@
 "use server";
 import { HUMANIZED_MESSAGES } from "@/lib/constants";
-import { PostDto } from "@/lib/dtos/post.dto";
-import { ActionResult } from "@/lib/types/response";
+import { PostFilterDto, PostDto } from "@/lib/dtos/post.dto";
+import { ActionResult, PostPagination } from "@/lib/types/response";
 import { PostSchema } from "@/lib/validators/post.validators";
 import AuthService from "@/services/auth.service";
 import PostService from "@/services/post.service";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
-import { redirect } from "next/navigation";
 
 const postService = new PostService();
 
-export const getAllPosts = async () => {
-  return await postService.getAllPosts();
+export const savePost = async ({ postUuid }: { postUuid: string }) => {
+  try {
+    const { user } = await AuthService.validateSession();
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
+
+    console.log("hello im trying to save post " + user.id);
+
+    await postService.savePost({
+      postUuid,
+      userUuid: user.id,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return { error: HUMANIZED_MESSAGES.ERROR.INTERNAL_SERVER_ERR };
+  }
+};
+
+export const isSavedByCurrentUser = async ({
+  postUuid,
+}: {
+  postUuid: string;
+}) => {
+  try {
+    const { user } = await AuthService.validateSession();
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
+
+    const result = await postService.isSavedByUser({
+      postUuid,
+      userUuid: user.id,
+    });
+
+    return { isSaved: result };
+  } catch (error) {
+    console.error(error);
+
+    return { error: HUMANIZED_MESSAGES.ERROR.INTERNAL_SERVER_ERR };
+  }
+};
+
+export const unSavePost = async ({ postUuid }: { postUuid: string }) => {
+  try {
+    const { user } = await AuthService.validateSession();
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
+
+    await postService.unSavePost({
+      postUuid,
+      userUuid: user.id,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return { error: HUMANIZED_MESSAGES.ERROR.INTERNAL_SERVER_ERR };
+  }
+};
+
+export const getAllPosts = async ({
+  page,
+  size,
+}: PostFilterDto): PostPagination => {
+  return await postService.getPosts({ size, page });
+};
+
+export const getAllCurrentUserPosts = async ({
+  page,
+  size,
+}: PostFilterDto): PostPagination => {
+  const { user } = await AuthService.validateSession();
+  return await postService.getPosts({ size, page, userUuid: user?.id });
+};
+
+export const getAllPostsByUserUuid = async ({
+  page,
+  size,
+  userUuid,
+}: PostFilterDto): PostPagination => {
+  return await postService.getPosts({ size, page, userUuid });
+};
+
+export const getAllSavedPosts = async ({
+  page,
+  size,
+}: PostFilterDto): PostPagination => {
+  const { user } = await AuthService.validateSession();
+  return await postService.getAllSavedPosts({ size, page, userUuid: user?.id });
+};
+
+export const getPostsByUserUuid = async ({
+  page,
+  size,
+  userUuid,
+}: PostFilterDto): PostPagination => {
+  return await postService.getPosts({ size, page, userUuid });
 };
 
 export const createPost = async (postDto: PostDto): Promise<ActionResult> => {
@@ -25,15 +120,10 @@ export const createPost = async (postDto: PostDto): Promise<ActionResult> => {
 
     await postService.creatPost(formData.content, user?.id);
 
-    return redirect("/");
+    return { success: "The post was created successfully !" };
   } catch (error) {
-    if (isRedirectError(error)) throw error;
+    console.error(error);
 
-    if (error instanceof Error) {
-      console.error(error.stack);
-    } else {
-      console.error(error);
-    }
     return { error: HUMANIZED_MESSAGES.ERROR.INTERNAL_SERVER_ERR };
   }
 };
@@ -47,15 +137,10 @@ export const editPost = async (
 
     await postService.editPost(uuid, formData.content);
 
-    return redirect("/");
+    return { success: "The post was updated successfully !", data: formData };
   } catch (error) {
-    if (isRedirectError(error)) throw error;
+    console.error(error);
 
-    if (error instanceof Error) {
-      console.error(error.stack);
-    } else {
-      console.error(error);
-    }
     return { error: HUMANIZED_MESSAGES.ERROR.INTERNAL_SERVER_ERR };
   }
 };
@@ -64,15 +149,10 @@ export const deletePost = async (uuid: string): Promise<ActionResult> => {
   try {
     await postService.deletePost(uuid);
 
-    return redirect("/");
+    return { success: "The post was deleted successfully !" };
   } catch (error) {
-    if (isRedirectError(error)) throw error;
+    console.error(error);
 
-    if (error instanceof Error) {
-      console.error(error.stack);
-    } else {
-      console.error(error);
-    }
     return { error: HUMANIZED_MESSAGES.ERROR.INTERNAL_SERVER_ERR };
   }
 };

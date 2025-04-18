@@ -12,6 +12,7 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { hash, verify } from "@node-rs/argon2";
 import { generateIdFromEntropySize } from "lucia";
 import AuthService from "@/services/auth.service";
+import { auth } from "@/lib/auth";
 
 const userService = new UserService();
 
@@ -95,13 +96,22 @@ export async function signIn(signInDto: UserLoginDto): Promise<ActionResult> {
   }
 }
 
-/* 
-
-async function signOut(): Promise<ActionResult> {
+export async function logout(): Promise<ActionResult> {
   try {
+    const { session } = await AuthService.validateSession();
+
+    if (!session) {
+      return { error: HUMANIZED_MESSAGES.ERROR.UNAUTHORIZED };
+    }
+
+    await auth.invalidateSession(session.id);
+    await AuthService.createBlankSession();
+
+    return redirect("/login");
   } catch (error) {
+    if (isRedirectError(error)) throw error;
+
     console.error(error);
     return { error: HUMANIZED_MESSAGES.ERROR.INTERNAL_SERVER_ERR };
   }
 }
- */
