@@ -19,6 +19,7 @@ const usePostQuery = ({
     hasNextPage,
     isFetchingNextPage,
     status,
+    isFetching,
   } = useInfiniteQuery({
     queryKey: [postQueryKey, "user-stats"],
     queryFn: ({ pageParam = 1 }) => callBack({ page: pageParam, size: 10 }),
@@ -45,6 +46,7 @@ const usePostQuery = ({
     status,
     hasNextPage,
     isFetchingNextPage,
+    isFetching,
   };
 };
 

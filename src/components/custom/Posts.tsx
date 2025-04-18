@@ -23,6 +23,7 @@ const Posts = ({
     status,
     hasNextPage,
     isFetchingNextPage,
+    isFetching,
   } = usePostQuery({ callBack });
 
   return (
@@ -34,7 +35,7 @@ const Posts = ({
       )}
       onScroll={handleScroll}
     >
-      {status === "pending" ? (
+      {status === "pending" || isFetching ? (
         <LoadingPosts />
       ) : status === "error" ? (
         <p className="text-red-500">
