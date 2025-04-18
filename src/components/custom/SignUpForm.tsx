@@ -49,7 +49,7 @@ const SignUpForm = () => {
   });
 
   return (
-    <Form callBack={signUp} form={form} fields={FIELDS} submitText="Sign In" />
+    <Form callBack={signUp} form={form} fields={FIELDS} submitText="Sign Up" />
   );
 };
 
