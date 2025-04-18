@@ -26,8 +26,8 @@ const EditPostDialog = ({
     mutationFn: async ({ uuid, postDto }) => {
       return await editPost(uuid, postDto);
     },
-    onMutate: async () => {
-      queryClient.invalidateQueries({ queryKey: ["posts", "saved-posts"] });
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
       showMessage("Post updated", "success");
     },
     onError: (error) => {

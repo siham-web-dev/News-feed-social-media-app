@@ -21,7 +21,7 @@ const DeletePostDialog = ({ uuid }: { uuid: string }) => {
       }
     },
     onMutate: async () => {
-      const queryFilter = { queryKey: ["posts", "saved-posts"] };
+      const queryFilter = { queryKey: ["posts"] };
 
       await queryClient.cancelQueries(queryFilter);
 
@@ -40,8 +40,9 @@ const DeletePostDialog = ({ uuid }: { uuid: string }) => {
           pages,
         };
       });
+    },
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-stats"] });
-
       showMessage("Post deleted", "success");
       onClose();
     },

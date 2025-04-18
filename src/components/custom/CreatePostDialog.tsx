@@ -18,9 +18,10 @@ const CreatePostDialog = () => {
         throw new Error(error);
       }
     },
-    onMutate: () => {
+    onSuccess: () => {
       showMessage("The post was created successfully", "success");
-      queryClient.invalidateQueries({ queryKey: ["posts", "user-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: ["user-stats"] });
     },
     onError: (error) => {
       showMessage(error.message, "error");

@@ -19,7 +19,7 @@ const SaveButton = ({ postUuid }: { postUuid: string }) => {
     queryKey: [`saved-by-${postUuid}-${user?.id}`],
   };
   const queryFilterSavedPosts = {
-    queryKey: [`saved-posts`],
+    queryKey: [`posts`],
   };
   const { data, isPending } = useQuery({
     queryKey: [`saved-by-${postUuid}-${user?.id}`],

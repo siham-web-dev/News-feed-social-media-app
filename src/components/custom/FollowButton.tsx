@@ -44,15 +44,16 @@ const FollowButton = ({ userUuid }: { userUuid: string }) => {
         isFollowedBy: !previousIsFollowedByState?.isFollowedBy,
       }));
 
-      queryClient.invalidateQueries({
-        queryKey: ["user-stats"],
-      });
-
       if (previousIsFollowedByState?.isFollowedBy) {
         showMessage("you have unfollowed this user", "success");
       } else {
         showMessage("you are following this user", "success");
       }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["user-stats"],
+      });
     },
     onError: async (error: Error) => {
       showMessage(error.message, "error");
