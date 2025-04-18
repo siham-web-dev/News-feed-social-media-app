@@ -37,6 +37,46 @@ class UserService {
       .from(UserFollowings)
       .where(eq(UserFollowings.followingId, userUuid));
 
+    const followers = await db.query.UserFollowings.findMany({
+      where: eq(UserFollowings.followingId, userUuid),
+      with: {
+        follower: {
+          with: {
+            profile: true,
+          },
+        },
+      },
+    });
+
+    const formattedFollowers: UserResult[] = followers.map((f) => ({
+      id: f.follower.id,
+      username: f.follower.username,
+      profile: {
+        avatarUrl: f.follower.profile.avatarUrl,
+        displayName: f.follower.profile.displayName,
+      },
+    }));
+
+    const followings = await db.query.UserFollowings.findMany({
+      where: eq(UserFollowings.userUuid, userUuid),
+      with: {
+        following: {
+          with: {
+            profile: true,
+          },
+        },
+      },
+    });
+
+    const formattedFollowings: UserResult[] = followings.map((f) => ({
+      id: f.following.id,
+      username: f.following.username,
+      profile: {
+        avatarUrl: f.following.profile.avatarUrl,
+        displayName: f.following.profile.displayName,
+      },
+    }));
+
     const nbFollowing = await db
       .select({ count: count() })
       .from(UserFollowings)
@@ -46,6 +86,8 @@ class UserService {
       nbPosts: nbPosts[0].count,
       nbFollowers: nbFollowers[0].count,
       nbFollowing: nbFollowing[0].count,
+      followers: formattedFollowers,
+      followings: formattedFollowings,
     };
   }
 
@@ -63,7 +105,15 @@ class UserService {
       },
     });
 
-    return userInfo;
+    return userInfo
+      ? {
+          ...userInfo,
+          profile: {
+            ...userInfo.profile,
+            bio: userInfo.profile.bio ?? undefined,
+          },
+        }
+      : undefined;
   }
 
   public async getProfileByUserId(

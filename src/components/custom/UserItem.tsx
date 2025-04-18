@@ -4,7 +4,7 @@ import CustomAvatar from "./CustomAvatar";
 import FollowButton from "./FollowButton";
 import Link from "next/link";
 
-type UsersListProps = {
+type UserItemProps = {
   avatarUrl: string;
   username: string;
   displayName: string;
@@ -12,7 +12,7 @@ type UsersListProps = {
   isCurrentUser?: boolean;
 };
 
-const UsersList: React.FC<UsersListProps> = ({
+const UserItem: React.FC<UserItemProps> = ({
   avatarUrl,
   username,
   displayName,
@@ -38,4 +38,4 @@ const UsersList: React.FC<UsersListProps> = ({
   );
 };
 
-export default UsersList;
+export default UserItem;

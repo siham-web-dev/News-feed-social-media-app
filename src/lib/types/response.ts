@@ -37,4 +37,6 @@ export type UserStatisticsResult = {
   nbPosts: number;
   nbFollowers: number;
   nbFollowing: number;
+  followings: UserResult[];
+  followers: UserResult[];
 };

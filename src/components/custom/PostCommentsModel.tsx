@@ -26,7 +26,7 @@ const PostCommentsModel = ({ postUuid }: { postUuid: string }) => {
           Show all {data?.comments?.length || 0} comments
         </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[525px]">
+      <DialogContent className="sm:max-w-[525px] max-h-[600px] overflow-y-auto">
         <DialogTitle>Comments</DialogTitle>
         {data?.comments && data?.comments?.length > 0 ? (
           data?.comments?.map((comment, index) => (

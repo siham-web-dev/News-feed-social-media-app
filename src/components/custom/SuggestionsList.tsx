@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
-import UsersList from "./UsersList";
+import UserItem from "./UserItem";
 import { getUsersSugesstions } from "@/actions/network.actions";
 
 const SuggestionsList = async () => {
@@ -10,7 +10,7 @@ const SuggestionsList = async () => {
       {sugesstions ? (
         sugesstions.map((s: any) => (
           <div key={s.users.id}>
-            <UsersList
+            <UserItem
               id={s.users.id}
               avatarUrl={s.profiles.avatarUrl}
               displayName={s.profiles.displayName}

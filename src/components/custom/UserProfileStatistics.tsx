@@ -1,7 +1,7 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "../ui/button";
 import { getUserStatisticsByUserUuid } from "@/actions/user.actions";
+import FollowModel from "./FollowersModel";
 
 const UserProfileStatistics = ({ userId }: { userId: string }) => {
   const { data } = useQuery({
@@ -15,20 +15,16 @@ const UserProfileStatistics = ({ userId }: { userId: string }) => {
         <span>{data?.nbPosts}</span>
         <span className="text-gray-500 font-semibold">Posts</span>
       </div>
-      <Button
-        variant={"link"}
-        className="flex gap-1 items-center cursor-pointer  text-[12px] md:text-[16px]"
-      >
-        <span>{data?.nbFollowing}</span>
-        <span className="text-gray-500 font-semibold ">Following</span>
-      </Button>
-      <Button
-        variant={"link"}
-        className="flex gap-1 items-center cursor-pointer  text-[12px] md:text-[16px]"
-      >
-        <span>{data?.nbFollowers}</span>
-        <span className="text-gray-500 font-semibold">Followers</span>
-      </Button>
+      <FollowModel
+        type="followers"
+        count={data?.nbFollowers as number}
+        data={data?.followers}
+      />
+      <FollowModel
+        type="followings"
+        count={data?.nbFollowing as number}
+        data={data?.followings}
+      />
     </div>
   );
 };

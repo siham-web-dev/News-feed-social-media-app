@@ -39,7 +39,7 @@ const PostComment = ({
           </div>
         </CardContent>
       </Card>
-      {hasSeparator && <Separator className="my-6" />}
+      {hasSeparator && <Separator className="my-2" />}
     </>
   );
 };
