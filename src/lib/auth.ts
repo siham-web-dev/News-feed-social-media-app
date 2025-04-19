@@ -16,6 +16,7 @@ declare module "lucia" {
     id: string;
     username: string;
     profile?: {
+      bio: string | null;
       avatarUrl: string;
       displayName: string;
     };

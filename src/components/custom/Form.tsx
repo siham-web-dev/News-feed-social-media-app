@@ -13,17 +13,26 @@ type FormProps = {
   form: UseFormReturn<any, any, undefined>;
   callBack: (dto: any) => Promise<ActionResult>;
   submitText: string;
+  width?: "full" | "fit";
 };
 
-const Form: React.FC<FormProps> = ({ fields, form, callBack, submitText }) => {
+const Form: React.FC<FormProps> = ({
+  fields,
+  form,
+  callBack,
+  submitText,
+  width = "full",
+}) => {
   const [isPending, startTransition] = useTransition();
   const { showMessage } = useMessages();
 
   const onSubmit = (values: any) => {
     startTransition(async () => {
-      const { error } = await callBack(values);
+      const { error, success } = await callBack(values);
       if (error) {
         showMessage(error, "error");
+      } else if (success) {
+        showMessage(success, "success");
       }
     });
   };
@@ -41,7 +50,7 @@ const Form: React.FC<FormProps> = ({ fields, form, callBack, submitText }) => {
           </div>
         ))}
         <SubmitButton
-          width="full"
+          width={width}
           disabled={isPending}
           text={isPending ? `${submitText}...` : `${submitText}`}
         />

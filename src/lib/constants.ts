@@ -5,6 +5,8 @@ export const HUMANIZED_MESSAGES = {
     USERNAME_ALREADY_TAKEN: "This username is already taken",
     INVALID_CREDENTIALS: "Username or password is invalid",
     UNAUTHORIZED: "Unauthorized",
+    INVALID_OTP: "Invalid OTP",
+    SINVALID_OLD_PASSWORD: "Invalid old password",
   },
   SUCCESS: {},
 };
