@@ -17,3 +17,5 @@ export const PASSWORD_HASH_OPTIONS = {
   outputLen: 32,
   parallelism: 1,
 };
+
+export const MAX_NUMBER_OF_OTP_ATTEMPTS = 3;

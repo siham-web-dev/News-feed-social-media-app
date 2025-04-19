@@ -1,4 +1,6 @@
 import {
+  EmailSchema,
+  OTPSchema,
   PasswordSchema,
   ProfileSchema,
   UsernameSchema,
@@ -13,6 +15,8 @@ export type FindUserDto =
 export type UpdateProfileDto = z.infer<typeof ProfileSchema>;
 export type UpdateUsernameDto = z.infer<typeof UsernameSchema>;
 export type UpdatePasswordDto = z.infer<typeof PasswordSchema>;
+export type UpdateEmailDto = z.infer<typeof EmailSchema>;
+export type OTPDto = z.infer<typeof OTPSchema>;
 
 export type UpdateUserDto = {
   username?: string;

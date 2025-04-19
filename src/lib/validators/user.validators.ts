@@ -11,6 +11,22 @@ const UsernameSchema = z.object({
   username: requiredString,
 });
 
+const OTPSchema = z.object({
+  otpCode: z
+    .string()
+    .trim()
+    .min(1, "this field is required")
+    .length(6, "Invalid OTP"),
+});
+
+const EmailSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, "this field is required")
+    .email("Invalid email address"),
+});
+
 const PasswordSchema = z
   .object({
     oldPassword: requiredString,
@@ -25,4 +41,10 @@ const PasswordSchema = z
 // RegisterSchema.parse({ username: "Ludwig" });
 // LoginSchema.parse({ username: "Ludwig" });
 
-export { ProfileSchema, UsernameSchema, PasswordSchema };
+export {
+  ProfileSchema,
+  UsernameSchema,
+  PasswordSchema,
+  EmailSchema,
+  OTPSchema,
+};

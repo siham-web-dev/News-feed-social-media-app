@@ -5,7 +5,7 @@ import UsernameForm from "@/components/custom/UsernameForm";
 
 const Settings = () => {
   return (
-    <div className="flex flex-col gap-6 my-5 mx-4 w-full h-screen">
+    <div className="flex flex-col gap-6 my-5 pb-2 mx-2 sm:mx-4 w-full ">
       <UsernameForm />
       <EmailForm />
       <PasswordForm />
