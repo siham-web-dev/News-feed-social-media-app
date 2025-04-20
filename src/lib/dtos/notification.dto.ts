@@ -15,3 +15,9 @@ export interface NotificationDTO {
   receiverUuid: string;
   refrenceUuid?: string | null;
 }
+
+export interface GetNotificationDto {
+  receiverUuid: string;
+  senderUuid: string;
+  refrenceUuid?: string;
+}

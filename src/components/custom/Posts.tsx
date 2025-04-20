@@ -35,7 +35,7 @@ const Posts = ({
       )}
       onScroll={handleScroll}
     >
-      {status === "pending" || isFetching ? (
+      {status === "pending" || (isFetching && !isFetchingNextPage) ? (
         <LoadingPosts />
       ) : status === "error" ? (
         <p className="text-red-500">

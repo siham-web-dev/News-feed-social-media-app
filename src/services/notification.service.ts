@@ -1,9 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { db } from "@/db";
 import { Notification } from "@/db/schemas";
-import { NotificationDTO, NotificationType } from "@/lib/dtos/notification.dto";
+import {
+  GetNotificationDto,
+  NotificationDTO,
+  NotificationType,
+} from "@/lib/dtos/notification.dto";
 import { sendBeamsNotification } from "@/lib/sendBeamsNotification";
-import { eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 
 export class NotificationService {
   async createAndSendNotification(notificationDTO: NotificationDTO) {
@@ -30,9 +34,18 @@ export class NotificationService {
     });
   }
 
-  async getNotifications(receiverUserId: string) {
-    const notifications = await db.query.Notification.findMany({
-      where: eq(Notification.receiverUuid, receiverUserId),
+  async getNotifications(dto: GetNotificationDto) {
+    const whereClause = [
+      eq(Notification.receiverUuid, dto.receiverUuid),
+      eq(Notification.senderUuid, dto.senderUuid),
+    ];
+
+    if (dto.refrenceUuid) {
+      whereClause.push(sql`meta_data ->> 'refrenceUuid' = ${dto.refrenceUuid}`);
+    }
+
+    const notifications = await db.query.Notification.findFirst({
+      where: and(...whereClause),
       with: {
         sender: {
           with: {
