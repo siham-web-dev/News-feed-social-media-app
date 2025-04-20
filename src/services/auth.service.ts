@@ -59,6 +59,7 @@ class AuthService {
           result.user.profile = {
             displayName: profile?.displayName,
             avatarUrl: profile?.avatarUrl,
+            bio: profile?.bio,
           };
         }
       }

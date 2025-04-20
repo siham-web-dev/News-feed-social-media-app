@@ -1,7 +1,11 @@
 import { db } from "@/db";
 import { Post, Profile, User, UserFollowings } from "@/db/schemas";
 import { count, eq, InferInsertModel, InferSelectModel } from "drizzle-orm";
-import { FindUserDto } from "@/lib/dtos/user.dto";
+import {
+  FindUserDto,
+  UpdateProfileDto,
+  UpdateUserDto,
+} from "@/lib/dtos/user.dto";
 import { CreatUserDto } from "@/lib/dtos/auth.dto";
 import { generateId } from "lucia";
 import { UserResult, UserStatisticsResult } from "@/lib/types/response";
@@ -149,6 +153,35 @@ class UserService {
     });
 
     return newUser;
+  }
+
+  public async updateProfile(userId: string, dto: UpdateProfileDto) {
+    const { displayName, bio } = dto;
+
+    const [updatedProfile] = await db
+      .update(Profile)
+      .set({
+        displayName,
+        bio,
+      })
+      .where(eq(Profile.userId, userId))
+      .returning();
+
+    return updatedProfile;
+  }
+
+  public async updateUser(userId: string, dto: UpdateUserDto) {
+    const set = {
+      ...dto,
+    };
+
+    const [updatedUser] = await db
+      .update(User)
+      .set(set)
+      .where(eq(User.id, userId))
+      .returning();
+
+    return updatedUser;
   }
 }
 

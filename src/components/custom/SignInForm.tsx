@@ -1,16 +1,11 @@
 "use client";
-"use client";
-import React, { useTransition } from "react";
-import { Form } from "../ui/form";
-import CustomFormField from "./FormField";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/lib/validators/auth.validators";
 import { UserLoginDto } from "@/lib/dtos/auth.dto";
-import SubmitButton from "./SubmitButton";
 import { InputType } from "@/lib/types/form";
 import { signIn } from "@/actions/auth.actions";
-import useMessages from "@/lib/hooks/useMessages";
+import Form from "./Form";
 
 const SignInForm = () => {
   const FIELDS: InputType[] = [
@@ -35,38 +30,10 @@ const SignInForm = () => {
       username: "",
       password: "",
     },
-  });
-  const [isPending, startTransition] = useTransition();
-  const { showMessage } = useMessages();
-
-  const onSubmit = (values: UserLoginDto) => {
-    startTransition(async () => {
-      const { error } = await signIn(values);
-      if (error) {
-        showMessage(error, "error");
-      }
-    });
-  };
+  }); //await signIn(values);
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full gap-3.5 flex flex-col"
-        method="post"
-      >
-        {FIELDS.map((field) => (
-          <div key={field.id}>
-            <CustomFormField {...field} control={form.control} />
-          </div>
-        ))}
-        <SubmitButton
-          width="full"
-          disabled={isPending}
-          text={isPending ? "Sign In..." : "Sign In"}
-        />
-      </form>
-    </Form>
+    <Form submitText="Sign In" form={form} callBack={signIn} fields={FIELDS} />
   );
 };
 

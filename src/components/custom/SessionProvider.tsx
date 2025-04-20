@@ -9,6 +9,7 @@ interface AuthSession {
         profile: {
           displayName: string;
           avatarUrl: string;
+          bio: string | null;
         };
       })
     | null;

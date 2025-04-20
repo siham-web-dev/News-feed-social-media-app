@@ -13,6 +13,7 @@ import {
 } from "@/db/schemas/network.schema";
 import { Comment, CommentRelations } from "@/db/schemas/comment.schema";
 import { LikedPostsRelations, LikedPost } from "@/db/schemas/likedPost.schema";
+import { EmailOTP } from "@/db/schemas/emailOtp.schema";
 
 export {
   Session,
@@ -29,4 +30,5 @@ export {
   userRelations,
   UserFollowings,
   userFollowingsRelations,
+  EmailOTP,
 };

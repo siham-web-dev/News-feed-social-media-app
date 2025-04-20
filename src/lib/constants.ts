@@ -5,6 +5,8 @@ export const HUMANIZED_MESSAGES = {
     USERNAME_ALREADY_TAKEN: "This username is already taken",
     INVALID_CREDENTIALS: "Username or password is invalid",
     UNAUTHORIZED: "Unauthorized",
+    INVALID_OTP: "Invalid OTP",
+    SINVALID_OLD_PASSWORD: "Invalid old password",
   },
   SUCCESS: {},
 };
@@ -15,3 +17,5 @@ export const PASSWORD_HASH_OPTIONS = {
   outputLen: 32,
   parallelism: 1,
 };
+
+export const MAX_NUMBER_OF_OTP_ATTEMPTS = 3;
