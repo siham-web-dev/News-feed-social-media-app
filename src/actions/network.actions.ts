@@ -3,8 +3,14 @@
 import { HUMANIZED_MESSAGES } from "@/lib/constants";
 import AuthService from "@/services/auth.service";
 import NetworkService from "@/services/network.service";
+import UserService from "@/services/user.service";
+import { NotificationService } from "@/services/notification.service";
+import { randomUUID } from "crypto";
+import { NotificationType } from "@/lib/dtos/notification.dto";
 
 const networkService = new NetworkService();
+const notificationService = new NotificationService();
+const userService = new UserService();
 
 export const getUsersSugesstions = async () => {
   const { user } = await AuthService.validateSession();
@@ -47,11 +53,23 @@ export const follow = async ({ userUuid }: { userUuid: string }) => {
     if (!user) {
       throw new Error("Unauthorized");
     }
-    console.log(userUuid === user.id);
 
     await networkService.follow({
       followingUuid: userUuid,
       userUuid: user.id,
+    });
+
+    const userProfile = await userService.getProfileByUserId(user.id);
+
+    await notificationService.createAndSendNotification({
+      receiverUuid: userUuid,
+      type: NotificationType.FOLLOW,
+      sender: {
+        uuid: user.id,
+        displayName: userProfile?.displayName || "",
+      },
+      content: `${userProfile?.displayName} started following you`,
+      id: randomUUID(),
     });
   } catch (error) {
     console.error(error);
@@ -71,6 +89,15 @@ export const unFollow = async ({ userUuid }: { userUuid: string }) => {
       followingUuid: userUuid,
       userUuid: user.id,
     });
+
+    const notification = await notificationService.getNotifications({
+      receiverUuid: userUuid,
+      senderUuid: user.id,
+    });
+
+    if (notification) {
+      await notificationService.deleteNotification(notification.id);
+    }
   } catch (error) {
     console.error(error);
 

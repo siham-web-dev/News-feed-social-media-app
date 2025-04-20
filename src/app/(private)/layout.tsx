@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import AuthService from "@/services/auth.service";
 import SideBar from "@/components/custom/SideBar";
 import NavBar from "@/components/custom/NavBar";
+import BeamSetup from "@/components/custom/BeamSetup";
 
 const layout = async ({ children }: { children: React.ReactNode }) => {
   const session = await AuthService.validateSession();
@@ -18,6 +19,7 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
         {children}
         <NavBar />
       </main>
+      <BeamSetup />
     </SessionProvider>
   );
 };

@@ -18,6 +18,15 @@ class PostService {
     },
   };
 
+  async getPostById(id: string) {
+    const result = await db.query.Post.findFirst({
+      where: eq(Post.id, id),
+      with: this.relations,
+    });
+
+    return result;
+  }
+
   async getAllSavedPosts(filterDto: PostFilterDto): PostPagination {
     const { page = 1, size = 10 } = filterDto;
     const offset = (page - 1) * size;

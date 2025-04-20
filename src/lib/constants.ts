@@ -19,3 +19,20 @@ export const PASSWORD_HASH_OPTIONS = {
 };
 
 export const MAX_NUMBER_OF_OTP_ATTEMPTS = 3;
+
+export const PUSHER_BEAM_INSTANCE_ID = process.env.NEXT_PUBLIC_BEAM_INSTANCE_ID;
+export const PUSHER_BEAMS_SECRET_KEY = process.env.PUSHER_BEAMS_SECRET_KEY;
+
+export const NEXT_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+export const SMTP_FROM = process.env.SMTP_FROM;
+export const SMTP_CONFIG = {
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT),
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASSWORD,
+  },
+};
+
+export const DATABASE_URL = process.env.DATABASE_URL;

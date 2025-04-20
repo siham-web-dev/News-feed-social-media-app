@@ -14,6 +14,10 @@ import {
 import { Comment, CommentRelations } from "@/db/schemas/comment.schema";
 import { LikedPostsRelations, LikedPost } from "@/db/schemas/likedPost.schema";
 import { EmailOTP } from "@/db/schemas/emailOtp.schema";
+import {
+  Notification,
+  notificationRelation,
+} from "@/db/schemas/notification.schema";
 
 export {
   Session,
@@ -31,4 +35,6 @@ export {
   UserFollowings,
   userFollowingsRelations,
   EmailOTP,
+  Notification,
+  notificationRelation,
 };
