@@ -3,6 +3,7 @@ import { User } from "@/db/schemas/user.schema";
 import { relations } from "drizzle-orm";
 import { Post, SavedPost } from "./post.schema";
 import { UserFollowings } from "./network.schema";
+import { Notification } from "./notification.schema";
 
 export const Profile = pgTable("profiles", {
   uuid: text("uuid").primaryKey(),
@@ -24,4 +25,5 @@ export const userRelations = relations(User, ({ many, one }) => ({
   followers: many(UserFollowings, { relationName: "follower" }),
   followings: many(UserFollowings, { relationName: "following" }),
   profile: one(Profile, { fields: [User.id], references: [Profile.userId] }),
+  notifications: many(Notification, { relationName: "recieved_notifications" }),
 }));
