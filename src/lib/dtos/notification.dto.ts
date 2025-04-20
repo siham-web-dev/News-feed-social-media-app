@@ -21,3 +21,9 @@ export interface GetNotificationDto {
   senderUuid: string;
   refrenceUuid?: string;
 }
+
+export interface NotificationMetaData {
+  avatarUrl: string;
+  displayName: string;
+  content: string;
+}
