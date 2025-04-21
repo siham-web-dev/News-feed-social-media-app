@@ -1,4 +1,11 @@
-import { json, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  json,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 import { User } from "./user.schema";
 import { relations } from "drizzle-orm";
 
@@ -19,6 +26,7 @@ export const Notification = pgTable("notifications", {
   receiverUuid: text("receiver_user_id")
     .notNull()
     .references(() => User.id, { onDelete: "cascade" }),
+  isRead: boolean("is_read").default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

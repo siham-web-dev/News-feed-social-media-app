@@ -2,6 +2,7 @@
 
 import { HUMANIZED_MESSAGES } from "@/lib/constants";
 import { NotificationType } from "@/lib/dtos/notification.dto";
+import PusherServer from "@/lib/pusherServer";
 import AuthService from "@/services/auth.service";
 import { CommentService } from "@/services/comment.service";
 import { NotificationService } from "@/services/notification.service";
@@ -62,10 +63,31 @@ export const addNewComment = async ({
           uuid: user.id,
           displayName: senderProfile?.displayName || "",
         },
-        content: `${post?.content.substring(0, 10)} ...`,
+        content: `${
+          senderProfile?.displayName
+        } commented on your post "${post?.content.substring(0, 30)} ..."`,
         refrenceUuid: postId,
         id: randomUUID(),
       });
+
+      // notify the user about the new comment
+      PusherServer.getInstance().trigger(
+        `notification-channel-${post?.userUuid}`,
+        "new-notification",
+        {
+          content: `${
+            senderProfile?.displayName
+          } commented on your post ${post?.content.substring(0, 10)} ...`,
+          avatarUrl: senderProfile?.avatarUrl,
+          displayName: senderProfile?.displayName,
+        }
+      );
+
+      PusherServer.getInstance().trigger(
+        `notification-count-${post?.userUuid}`,
+        "count-unread-notifications",
+        {}
+      );
     }
   } catch (error) {
     console.error(error);

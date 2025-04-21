@@ -7,6 +7,7 @@ import UserService from "@/services/user.service";
 import { NotificationService } from "@/services/notification.service";
 import { randomUUID } from "crypto";
 import { NotificationType } from "@/lib/dtos/notification.dto";
+import PusherServer from "@/lib/pusherServer";
 
 const networkService = new NetworkService();
 const notificationService = new NotificationService();
@@ -71,6 +72,23 @@ export const follow = async ({ userUuid }: { userUuid: string }) => {
       content: `${userProfile?.displayName} started following you`,
       id: randomUUID(),
     });
+
+    // notify the user about the new follow
+    PusherServer.getInstance().trigger(
+      `notification-channel-${userUuid}`,
+      "new-notification",
+      {
+        content: `${userProfile?.displayName} started following you`,
+        avatarUrl: userProfile?.avatarUrl,
+        displayName: userProfile?.displayName,
+      }
+    );
+
+    PusherServer.getInstance().trigger(
+      `notification-count-${userUuid}`,
+      "count-unread-notifications",
+      {}
+    );
   } catch (error) {
     console.error(error);
 
@@ -90,13 +108,22 @@ export const unFollow = async ({ userUuid }: { userUuid: string }) => {
       userUuid: user.id,
     });
 
-    const notification = await notificationService.getNotifications({
+    const notifications = await notificationService.getNotifications({
       receiverUuid: userUuid,
       senderUuid: user.id,
     });
 
-    if (notification) {
-      await notificationService.deleteNotification(notification.id);
+    if (
+      notifications?.length > 0 &&
+      notifications[0].type === NotificationType.FOLLOW
+    ) {
+      await notificationService.deleteNotification(notifications[0].id);
+
+      PusherServer.getInstance().trigger(
+        `notification-count-${userUuid}`,
+        "count-unread-notifications",
+        {}
+      );
     }
   } catch (error) {
     console.error(error);

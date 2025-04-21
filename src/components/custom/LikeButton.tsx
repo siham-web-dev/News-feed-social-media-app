@@ -62,7 +62,12 @@ const LikeButton = ({ postUuid }: { postUuid: string }) => {
               ...oldData.likes,
               {
                 user: {
-                  profile: user?.profile,
+                  profile: user?.profile
+                    ? {
+                        ...user.profile,
+                        bio: user.profile.bio ?? undefined,
+                      }
+                    : undefined,
                   id: user?.id ?? "",
                   username: user?.username || "",
                 },

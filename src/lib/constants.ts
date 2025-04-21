@@ -23,6 +23,14 @@ export const MAX_NUMBER_OF_OTP_ATTEMPTS = 3;
 export const PUSHER_BEAM_INSTANCE_ID = process.env.NEXT_PUBLIC_BEAM_INSTANCE_ID;
 export const PUSHER_BEAMS_SECRET_KEY = process.env.PUSHER_BEAMS_SECRET_KEY;
 
+export const PUSHER_CHANNEL_CONFIG = {
+  appId: process.env.NEXT_PUBLIC_PUSHER_APP_ID || "",
+  key: process.env.NEXT_PUBLIC_PUSHER_KEY || "",
+  secret: process.env.NEXT_PUBLIC_PUSHER_SECRET || "",
+  cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER || "",
+  useTLS: true,
+};
+
 export const NEXT_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const SMTP_FROM = process.env.SMTP_FROM;

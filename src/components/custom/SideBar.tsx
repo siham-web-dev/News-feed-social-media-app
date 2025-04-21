@@ -1,13 +1,13 @@
 import React from "react";
 import Logo from "./Logo";
 import { GrSearch } from "react-icons/gr";
-import { MdOutlineNotificationsActive } from "react-icons/md";
 import { FaRegMessage } from "react-icons/fa6";
 import { IoHomeOutline } from "react-icons/io5";
 import Link from "next/link";
 import ProfileAvatar from "./ProfileAvatar";
 import CreatePostDialog from "./CreatePostDialog";
 import PlusDropDown from "./PlusDropDown";
+import NotificationLink from "./NotificationLink";
 
 const SideBar = () => {
   const LINKS = [
@@ -29,12 +29,6 @@ const SideBar = () => {
       icon: <FaRegMessage size={20} />,
       label: "Messages",
     },
-    {
-      id: 4,
-      href: "/notifications",
-      icon: <MdOutlineNotificationsActive size={24} />,
-      label: "Notifications",
-    },
   ];
 
   return (
@@ -53,6 +47,7 @@ const SideBar = () => {
             <p className="hidden lg:block">{link.label}</p>
           </Link>
         ))}
+        <NotificationLink />
         <CreatePostDialog />
         <div className="hidden sm:block">
           <ProfileAvatar />
