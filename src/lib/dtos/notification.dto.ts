@@ -18,6 +18,13 @@ export interface NotificationDTO {
 
 export interface GetNotificationDto {
   receiverUuid: string;
-  senderUuid: string;
+  senderUuid?: string;
   refrenceUuid?: string;
+  isRead?: boolean;
+}
+
+export interface NotificationMetaData {
+  avatarUrl: string;
+  displayName: string;
+  content: string;
 }

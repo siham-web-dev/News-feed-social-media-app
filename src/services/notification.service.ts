@@ -7,9 +7,40 @@ import {
   NotificationType,
 } from "@/lib/dtos/notification.dto";
 import { sendBeamsNotification } from "@/lib/sendBeamsNotification";
-import { and, eq, sql } from "drizzle-orm";
+import { and, count, eq, sql } from "drizzle-orm";
 
 export class NotificationService {
+  async markAsRead(notificationId: string) {
+    const notification = await db.query.Notification.findFirst({
+      where: eq(Notification.id, notificationId),
+    });
+
+    if (!notification) {
+      throw new Error("Notification not found");
+    }
+
+    await db
+      .update(Notification)
+      .set({ isRead: true })
+      .where(eq(Notification.id, notificationId));
+  }
+
+  async countUnreadNotifications(userId: string) {
+    const result = await db
+      .select({
+        count: count(),
+      })
+      .from(Notification)
+      .where(
+        and(
+          eq(Notification.receiverUuid, userId),
+          eq(Notification.isRead, false)
+        )
+      );
+
+    return result[0].count;
+  }
+
   async createAndSendNotification(notificationDTO: NotificationDTO) {
     const { receiverUuid, type, sender, content } = notificationDTO;
     const values: any = {
@@ -34,17 +65,22 @@ export class NotificationService {
     });
   }
 
-  async getNotifications(dto: GetNotificationDto) {
-    const whereClause = [
-      eq(Notification.receiverUuid, dto.receiverUuid),
-      eq(Notification.senderUuid, dto.senderUuid),
-    ];
+  async getNotifications(dto: GetNotificationDto, filter = false) {
+    const whereClause = [eq(Notification.receiverUuid, dto.receiverUuid)];
 
     if (dto.refrenceUuid) {
       whereClause.push(sql`meta_data ->> 'refrenceUuid' = ${dto.refrenceUuid}`);
     }
 
-    const notifications = await db.query.Notification.findFirst({
+    if (dto.senderUuid) {
+      whereClause.push(eq(Notification.senderUuid, dto.senderUuid));
+    }
+
+    if (filter) {
+      whereClause.push(eq(Notification.isRead, dto.isRead ?? false));
+    }
+
+    const notifications = await db.query.Notification.findMany({
       where: and(...whereClause),
       with: {
         sender: {
