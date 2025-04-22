@@ -1,6 +1,13 @@
 import { db } from "@/db";
 import { Post, Profile, User, UserFollowings } from "@/db/schemas";
-import { count, eq, InferInsertModel, InferSelectModel } from "drizzle-orm";
+import {
+  count,
+  eq,
+  ilike,
+  InferInsertModel,
+  InferSelectModel,
+  or,
+} from "drizzle-orm";
 import {
   FindUserDto,
   UpdateProfileDto,
@@ -8,9 +15,69 @@ import {
 } from "@/lib/dtos/user.dto";
 import { CreatUserDto } from "@/lib/dtos/auth.dto";
 import { generateId } from "lucia";
-import { UserResult, UserStatisticsResult } from "@/lib/types/response";
+import {
+  SearchUsersResult,
+  UserResult,
+  UserStatisticsResult,
+} from "@/lib/types/response";
 
 class UserService {
+  public async searchUsers(
+    search: string,
+    page: number = 1,
+    userId: string
+  ): Promise<SearchUsersResult> {
+    const skip = (page - 1) * 3;
+    const regex = or(
+      ilike(User.username, `%${search}%`),
+      ilike(User.email, `%${search}%`)
+    );
+
+    const users = await db.query.User.findMany({
+      where: regex,
+      with: {
+        profile: true,
+        followers: {
+          with: {
+            follower: true,
+          },
+        },
+      },
+      limit: 3,
+      offset: skip,
+    });
+
+    const formattedUsers = users.map((user) => ({
+      id: user.id,
+      username: user.username,
+      profile: {
+        avatarUrl: user.profile.avatarUrl,
+        displayName: user.profile.displayName,
+      },
+      isFollowedBy: user.followers.some((follower) => {
+        return follower.follower.id === userId;
+      }),
+    }));
+
+    const totalUsers = await db
+      .select({ count: count() })
+      .from(User)
+      .where(regex);
+    const totalUsersCount = totalUsers[0].count;
+    const totalPages = Math.ceil(totalUsersCount / 3);
+    const hasNextPage = page < totalPages;
+
+    return {
+      users: formattedUsers,
+      pageInfo: {
+        totalUsers: totalUsersCount,
+        totalPages,
+        hasNextPage,
+        currentPage: page,
+      },
+    };
+  }
+
   public async findUser(
     findUserDto: FindUserDto
   ): Promise<InferSelectModel<typeof User> | undefined> {

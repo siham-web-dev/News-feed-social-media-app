@@ -33,6 +33,16 @@ export type UserResult = {
   };
 };
 
+export type SearchUsersResult = {
+  users: UserResult[];
+  pageInfo: {
+    totalUsers: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    currentPage: number;
+  };
+};
+
 export type UserStatisticsResult = {
   nbPosts: number;
   nbFollowers: number;

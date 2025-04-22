@@ -12,7 +12,7 @@ import { Input } from "../ui/input";
 import { Control } from "react-hook-form";
 
 export type FormFieldType = {
-  label: string;
+  label?: string;
   type: "text" | "email" | "password";
   placeholder: string;
   control?: Control<any>;

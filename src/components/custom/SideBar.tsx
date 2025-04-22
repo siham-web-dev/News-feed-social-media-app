@@ -1,7 +1,5 @@
-import React from "react";
 import Logo from "./Logo";
 import { GrSearch } from "react-icons/gr";
-import { FaRegMessage } from "react-icons/fa6";
 import { IoHomeOutline } from "react-icons/io5";
 import Link from "next/link";
 import ProfileAvatar from "./ProfileAvatar";
@@ -23,12 +21,12 @@ const SideBar = () => {
       icon: <GrSearch size={20} />,
       label: "Search",
     },
-    {
+    /*    {
       id: 3,
       href: "/messages",
       icon: <FaRegMessage size={20} />,
       label: "Messages",
-    },
+    }, */
   ];
 
   return (

@@ -28,6 +28,21 @@ import { hash, verify } from "@node-rs/argon2";
 const userService = new UserService();
 const emailOTPService = new EmailOTPService();
 
+export const searchUsers = async (search: string, page: number) => {
+  try {
+    const { user } = await AuthService.validateSession();
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
+
+    const result = await userService.searchUsers(search, page, user.id);
+    return result;
+  } catch (error) {
+    console.error(error);
+    return { error: HUMANIZED_MESSAGES.ERROR.INTERNAL_SERVER_ERR };
+  }
+};
+
 export const getUserProfileInfoByUserUuid = async (userId: string) => {
   return await userService.getUserProfileInfoByUserUuid(userId);
 };
