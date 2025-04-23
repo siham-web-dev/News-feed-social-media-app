@@ -9,6 +9,7 @@ import {
   or,
 } from "drizzle-orm";
 import {
+  CreatGooglesUserDto,
   FindUserDto,
   UpdateProfileDto,
   UpdateUserDto,
@@ -49,7 +50,7 @@ class UserService {
 
     const formattedUsers = users.map((user) => ({
       id: user.id,
-      username: user.username,
+      username: user.username || undefined,
       profile: {
         avatarUrl: user.profile.avatarUrl,
         displayName: user.profile.displayName,
@@ -95,6 +96,24 @@ class UserService {
     return user;
   }
 
+  async findUserBygoogleId(
+    googleId: string
+  ): Promise<InferSelectModel<typeof User> | undefined> {
+    const user = await db.query.User.findFirst({
+      where: eq(User.googleId, googleId),
+      columns: {
+        id: true,
+        email: true,
+        googleId: true,
+        username: true,
+        hashedPassword: true,
+        createdAt: true,
+      },
+    });
+
+    return user;
+  }
+
   public async getUserStatistics(
     userUuid: string
   ): Promise<UserStatisticsResult> {
@@ -121,7 +140,7 @@ class UserService {
 
     const formattedFollowers: UserResult[] = followers.map((f) => ({
       id: f.follower.id,
-      username: f.follower.username,
+      username: f.follower?.username || undefined,
       profile: {
         avatarUrl: f.follower.profile.avatarUrl,
         displayName: f.follower.profile.displayName,
@@ -141,7 +160,7 @@ class UserService {
 
     const formattedFollowings: UserResult[] = followings.map((f) => ({
       id: f.following.id,
-      username: f.following.username,
+      username: f.following?.username || undefined,
       profile: {
         avatarUrl: f.following.profile.avatarUrl,
         displayName: f.following.profile.displayName,
@@ -179,6 +198,7 @@ class UserService {
     return userInfo
       ? {
           ...userInfo,
+          username: userInfo.username ?? undefined,
           profile: {
             ...userInfo.profile,
             bio: userInfo.profile.bio ?? undefined,
@@ -195,6 +215,28 @@ class UserService {
     });
 
     return profile;
+  }
+
+  public async googleSignUp(dto: CreatGooglesUserDto) {
+    const id = generateId(10);
+    const user = await db
+      .insert(User)
+      .values({
+        id,
+        googleId: dto.googleId,
+        email: dto.email,
+        username: dto.email.split("@")[0],
+      })
+      .returning();
+
+    await db.insert(Profile).values({
+      uuid: generateId(10),
+      avatarUrl: dto.avatarUrl,
+      userId: id,
+      displayName: dto.displayName,
+    });
+
+    return user[0];
   }
 
   public async createUser(

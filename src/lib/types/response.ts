@@ -23,7 +23,7 @@ export type PostPagination = Promise<{
 
 export type UserResult = {
   id: string;
-  username: string;
+  username?: string;
   email?: string;
   profile?: {
     uuid?: string;

@@ -1,8 +1,7 @@
 import Link from "next/link";
 import React from "react";
-import { Button } from "../ui/button";
 import Logo from "./Logo";
-import { FaGoogle } from "react-icons/fa";
+import GoogleSignInBtn from "./GoogleSignInBtn";
 
 type AuthContentProps = {
   children: React.ReactNode;
@@ -17,10 +16,7 @@ const AuthContent: React.FC<AuthContentProps> = ({ children, type }) => {
         <p className="text-center text-accent-foreground text-sm">
           Stay informed with real-time news, trending stories, and live updates.
         </p>
-        <Button className="w-full" variant={"destructive"}>
-          <FaGoogle />
-          Connect with Google
-        </Button>
+        <GoogleSignInBtn type={type} />
         {children}
       </div>
       <div className="rounded-2xl p-5  bg-white border border-foreground text-black gap-3 w-full">

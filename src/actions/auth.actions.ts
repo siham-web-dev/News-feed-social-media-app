@@ -1,9 +1,6 @@
 "use server";
 import { ActionResult } from "@/lib/types/response";
-import {
-  /* UserLoginDto, */ UserLoginDto,
-  UserRegistrationDto,
-} from "@/lib/dtos/auth.dto";
+import { UserLoginDto, UserRegistrationDto } from "@/lib/dtos/auth.dto";
 import { LoginSchema, RegisterSchema } from "@/lib/validators/auth.validators";
 import UserService from "@/services/user.service";
 import { HUMANIZED_MESSAGES, PASSWORD_HASH_OPTIONS } from "@/lib/constants";
@@ -13,6 +10,7 @@ import { hash, verify } from "@node-rs/argon2";
 import { generateIdFromEntropySize } from "lucia";
 import AuthService from "@/services/auth.service";
 import { auth } from "@/lib/auth";
+import { CreatGooglesUserDto } from "@/lib/dtos/user.dto";
 
 const userService = new UserService();
 
@@ -59,6 +57,53 @@ export async function signUp(dto: UserRegistrationDto): Promise<ActionResult> {
   }
 }
 
+export async function googleSignIn({ googleId }: { googleId: string }) {
+  try {
+    const user = await userService.findUserBygoogleId(googleId);
+
+    if (!user) {
+      return { error: HUMANIZED_MESSAGES.ERROR.INVALID_CREDENTIALS };
+    }
+
+    const newSession = await AuthService.createSession(user.id);
+
+    await AuthService.createCookieSession(newSession);
+
+    return redirect("/");
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+
+    console.error(error);
+    return { error: HUMANIZED_MESSAGES.ERROR.INTERNAL_SERVER_ERR };
+  }
+}
+
+export async function googleSignUp(
+  dto: CreatGooglesUserDto
+): Promise<ActionResult> {
+  try {
+    const user = await userService.findUser({
+      email: dto.email,
+    });
+
+    if (user) {
+      return { error: HUMANIZED_MESSAGES.ERROR.EMAIL_ALREADY_TAKEN };
+    }
+
+    const newUser = await userService.googleSignUp(dto);
+    const newSession = await AuthService.createSession(newUser.id);
+
+    await AuthService.createCookieSession(newSession);
+
+    return redirect("/");
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+
+    console.error(error);
+    return { error: HUMANIZED_MESSAGES.ERROR.INTERNAL_SERVER_ERR };
+  }
+}
+
 export async function signIn(dto: UserLoginDto): Promise<ActionResult> {
   try {
     const formData = LoginSchema.parse(dto);
@@ -72,7 +117,7 @@ export async function signIn(dto: UserLoginDto): Promise<ActionResult> {
     }
 
     const isSamePassword = await verify(
-      user?.hashedPassword,
+      user?.hashedPassword ?? "",
       formData.password,
       PASSWORD_HASH_OPTIONS
     );

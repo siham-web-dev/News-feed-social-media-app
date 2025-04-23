@@ -23,3 +23,10 @@ export type UpdateUserDto = {
   email?: string;
   hashedPassword?: string;
 };
+
+export type CreatGooglesUserDto = {
+  email: string;
+  displayName: string;
+  avatarUrl: string;
+  googleId?: string;
+};

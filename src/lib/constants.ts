@@ -3,7 +3,7 @@ export const HUMANIZED_MESSAGES = {
     INTERNAL_SERVER_ERR: "Internal server error",
     EMAIL_ALREADY_TAKEN: "This email is already taken",
     USERNAME_ALREADY_TAKEN: "This username is already taken",
-    INVALID_CREDENTIALS: "Username or password is invalid",
+    INVALID_CREDENTIALS: "There is no user with these credentials",
     UNAUTHORIZED: "Unauthorized",
     INVALID_OTP: "Invalid OTP",
     SINVALID_OLD_PASSWORD: "Invalid old password",
@@ -44,3 +44,12 @@ export const SMTP_CONFIG = {
 };
 
 export const DATABASE_URL = process.env.DATABASE_URL;
+
+export const FIREBASE_CONFIG = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+};
