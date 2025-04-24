@@ -41,7 +41,10 @@ export const POST = async (req: Request) => {
 
     await writeFile(url, buffer);
 
-    const avatarUrl = `${NEXT_PUBLIC_BASE_URL}/${relativePath}`;
+    const avatarUrl = `${NEXT_PUBLIC_BASE_URL}/${relativePath.replace(
+      "public/",
+      ""
+    )}`;
 
     console.log("avatarUrl  ", avatarUrl);
 

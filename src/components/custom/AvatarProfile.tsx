@@ -8,6 +8,8 @@ const AvatarProfile = ({
   url: string;
   isEditable: boolean;
 }) => {
+  console.log("AvatarProfile url", url);
+
   return (
     <div className="flex flex-col items-center gap-2">
       <CustomAvatar url={url} size="large" />
