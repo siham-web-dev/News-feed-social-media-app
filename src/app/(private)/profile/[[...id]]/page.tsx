@@ -21,7 +21,7 @@ const ProfilePage = async ({ params }: { params: { id?: string } }) => {
     <div className="flex gap-5 flex-col w-full items-start h-full mt-3">
       <div className="flex gap-5 items-center bg-white rounded-2xl p-7 md:w-[600px] lg:w-[800px] mx-auto">
         <AvatarProfile
-          url={data.profile.avatarUrl}
+          url={data?.profile?.avatarUrl || ""}
           isEditable={isCurrentUser}
         />
         <ProfileInfo user={data} isEditable={isCurrentUser} />

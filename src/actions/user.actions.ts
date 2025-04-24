@@ -196,7 +196,7 @@ export const updatePassword = async (dto: UpdatePasswordDto) => {
     if (findUser) {
       // check old password
       const isSamePassword = await verify(
-        findUser?.hashedPassword,
+        findUser?.hashedPassword ?? "",
         formData.oldPassword,
         PASSWORD_HASH_OPTIONS
       );

@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import UserProfileStatistics from "./UserProfileStatistics";
 import { UserResult } from "@/lib/types/response";
 import FollowButton from "./FollowButton";
+import Link from "next/link";
 
 const ProfileInfo = ({
   user,
@@ -19,8 +20,11 @@ const ProfileInfo = ({
           <Button
             variant={"outline"}
             className="btn btn-primary hover:cursor-pointer"
+            asChild
           >
-            <FaUserEdit /> Edit profile
+            <Link href={`/setting`}>
+              <FaUserEdit /> Edit profile
+            </Link>
           </Button>
         ) : (
           <FollowButton userUuid={user.id} />

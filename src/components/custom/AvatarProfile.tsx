@@ -1,6 +1,5 @@
-import { FaEdit } from "react-icons/fa";
-import { Button } from "../ui/button";
 import CustomAvatar from "./CustomAvatar";
+import AvatarUploadDialog from "./AvatarUploadDialog";
 
 const AvatarProfile = ({
   url,
@@ -12,12 +11,7 @@ const AvatarProfile = ({
   return (
     <div className="flex flex-col items-center gap-2">
       <CustomAvatar url={url} size="large" />
-      {isEditable && (
-        <Button variant={"outline"}>
-          <FaEdit />
-          <span> Edit Image</span>
-        </Button>
-      )}
+      {isEditable && <AvatarUploadDialog />}
     </div>
   );
 };

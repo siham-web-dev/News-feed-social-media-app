@@ -264,6 +264,21 @@ class UserService {
     return newUser;
   }
 
+  public async updateAvatarUrl(
+    userId: string,
+    avatarUrl: string
+  ): Promise<InferInsertModel<typeof Profile>> {
+    const [updatedProfile] = await db
+      .update(Profile)
+      .set({
+        avatarUrl,
+      })
+      .where(eq(Profile.userId, userId))
+      .returning();
+
+    return updatedProfile;
+  }
+
   public async updateProfile(userId: string, dto: UpdateProfileDto) {
     const { displayName, bio } = dto;
 

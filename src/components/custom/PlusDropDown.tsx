@@ -8,7 +8,6 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import Link from "next/link";
-import { MdOutlineDarkMode } from "react-icons/md";
 import { PiSignOut } from "react-icons/pi";
 import { CiSettings } from "react-icons/ci";
 import { logout } from "@/actions/auth.actions";
@@ -18,7 +17,7 @@ const PlusDropDown = () => {
   const { showMessage } = useMessages();
 
   const handleLogout = async () => {
-    showMessage("logged out", "info");
+    showMessage("logged out", "success");
 
     const { error } = await logout();
     // handle logout
@@ -46,12 +45,12 @@ const PlusDropDown = () => {
               <span>Settings</span>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild className="w-full">
+          {/*    <DropdownMenuItem asChild className="w-full">
             <button className="flex gap-0.5 items-center cursor-pointer">
               <MdOutlineDarkMode />
               <span>Dark Mode</span>
             </button>
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuItem asChild className="w-full">
             <button
               className="flex gap-0.5 items-center cursor-pointer"
